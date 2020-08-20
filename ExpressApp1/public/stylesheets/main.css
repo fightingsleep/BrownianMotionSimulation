@@ -1,0 +1,22 @@
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+svg {
+    height: 35%;
+    width: 35%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    width: 150px;
+    height: 40px;
+}
+
+.inputSection {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
