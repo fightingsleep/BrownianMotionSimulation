@@ -5,7 +5,7 @@ const svg = d3.select("#brownianMotionGraph").append("svg")
 var BrownianMotionSimulation = CreateNewSimulation()
 BrownianMotionSimulation.Initialize(svg);
 
-var spotPrice, strikePrice, term, vol, rfr, numSims;
+var spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps;
 
 d3.select("#runButton").on("click", function () { RefreshUserInputs(); BrownianMotionSimulation.RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims) });
 d3.select("#clearButton").on("click", function () { BrownianMotionSimulation.ResetSimulation() });
@@ -51,8 +51,7 @@ function CreateNewSimulation() {
         AddAxis(xScale, yScale)
     }
 
-    function RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims) {
-        let steps = 50;
+    function RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps) {
         for (let i = 0; i < numSims; i++) {
             // The data points to display
             let data = [
@@ -61,8 +60,8 @@ function CreateNewSimulation() {
 
             for (let j = 1; j <= steps; j++) {
                 let normVar = GetNormalRandomVariable(0, 1);
-                let stockPrice = spotPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * term / steps + vol * Math.sqrt(term / steps) * normVar);
-                data.push({ orient: 'left', name: stockPrice.toFixed(2), x: term / steps * j, y: stockPrice })
+                let stockPrice = spotPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * term / timeSteps + vol * Math.sqrt(term / timeSteps) * normVar);
+                data.push({ orient: 'left', name: stockPrice.toFixed(2), x: term / timeSteps * j, y: stockPrice })
             }
 
             allData = allData.concat(data);
@@ -241,4 +240,5 @@ function RefreshUserInputs() {
     vol = Number(d3.select("#volInput").node().value);
     rfr = Number(d3.select("#rfrInput").node().value);
     numSims = Number(d3.select("#numSimsInput").node().value);
+    timeSteps = Number(d3.select("#timeStepInput").node().value);
 };
