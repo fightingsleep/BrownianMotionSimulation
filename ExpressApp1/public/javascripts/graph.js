@@ -63,6 +63,8 @@ function CreateNewSimulation() {
     }
 
     function RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps) {
+        var deltaT = term / timeSteps;
+
         for (let i = 0; i < numSims; i++) {
             // The data points to display
             let data = [
@@ -72,8 +74,8 @@ function CreateNewSimulation() {
             var currStockPrice = spotPrice;
             for (let j = 1; j <= timeSteps; j++) {
                 let normVar = GetNormalRandomVariable(0, 1);
-                currStockPrice = currStockPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * term / timeSteps + vol * Math.sqrt(term / timeSteps) * normVar);
-                data.push({ orient: 'left', name: currStockPrice.toFixed(2), x: term / timeSteps * j, y: currStockPrice })
+                currStockPrice = currStockPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * deltaT + vol * Math.sqrt(deltaT) * normVar);
+                data.push({ orient: 'left', name: currStockPrice.toFixed(2), x: deltaT * j, y: currStockPrice })
             }
 
             allData = allData.concat(data);
