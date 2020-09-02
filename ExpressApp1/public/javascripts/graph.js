@@ -1,18 +1,28 @@
 "use strict";
 
-const svg = d3.select("#brownianMotionGraph").append("svg")
+const svg = d3.select("#graphContainer").append("svg")
 
 var BrownianMotionSimulation = CreateNewSimulation()
 BrownianMotionSimulation.Initialize(svg);
 
 var spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps;
 
-d3.select("#runButton").on("click", function () { RefreshUserInputs(); BrownianMotionSimulation.RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims) });
-d3.select("#clearButton").on("click", function () { BrownianMotionSimulation.ResetSimulation() });
+d3.select("#runButton").on("click", function () {
+    RefreshUserInputs();
+    var optionPrices = BrownianMotionSimulation.RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps);
+    document.getElementById("callPriceOutput").value = optionPrices.callPrice.toFixed(2);
+    document.getElementById("putPriceOutput").value = optionPrices.putPrice.toFixed(2);
+});
+
+d3.select("#clearButton").on("click", function () {
+    BrownianMotionSimulation.ResetSimulation();
+    document.getElementById("callPriceOutput").value = 0;
+    document.getElementById("putPriceOutput").value = 0;
+});
 
 // Put everything inside a closure
 function CreateNewSimulation() {
-    var svg, graphInfo, xScale, yScale, line, allData = [];
+    var svg, graphInfo, xScale, yScale, line, xExtent, yExtent, allData = [], pricesAtExpiry = [];
 
     function Initialize(graph) {
         svg = graph;
@@ -21,15 +31,16 @@ function CreateNewSimulation() {
         graphInfo = {
             xAxisLabel: "Time",
             yAxisLabel: "Price",
-            height: 1000,
-            width: 1000,
+            height: 1200,
+            width: 1200,
             marginTop: 20,
             marginBottom: 30,
             marginRight: 30,
-            marginLeft: 40,
+            marginLeft: 50,
             animationDuration: 5000
         };
 
+        svg.attr("id", "graph");
         svg.attr("viewBox", [0, 0, graphInfo.width, graphInfo.height]);
 
         // Define the scale for the x-axis
@@ -58,25 +69,46 @@ function CreateNewSimulation() {
                 { orient: 'left', name: spotPrice.toFixed(2), x: 0, y: spotPrice },
             ];
 
-            for (let j = 1; j <= steps; j++) {
+            var currStockPrice = spotPrice;
+            for (let j = 1; j <= timeSteps; j++) {
                 let normVar = GetNormalRandomVariable(0, 1);
-                let stockPrice = spotPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * term / timeSteps + vol * Math.sqrt(term / timeSteps) * normVar);
-                data.push({ orient: 'left', name: stockPrice.toFixed(2), x: term / timeSteps * j, y: stockPrice })
+                currStockPrice = currStockPrice * Math.exp((rfr - 0.5 * Math.pow(vol, 2)) * term / timeSteps + vol * Math.sqrt(term / timeSteps) * normVar);
+                data.push({ orient: 'left', name: currStockPrice.toFixed(2), x: term / timeSteps * j, y: currStockPrice })
             }
 
             allData = allData.concat(data);
+            pricesAtExpiry.push(data[data.length - 1].y);
 
-            // Define the scale for the x-axis
-            xScale = d3.scaleLinear()
-                .domain(d3.extent(allData, d => d.x)).nice()
-                .range([graphInfo.marginLeft, graphInfo.width - graphInfo.marginRight]);
+            let currXExtent = d3.extent(allData, d => d.x);
+            let currYExtent = d3.extent(allData, d => d.y);
 
-            // Define the scale for the y-axis
-            yScale = d3.scaleLinear()
-                .domain(d3.extent(allData, d => d.y)).nice()
-                .range([graphInfo.height - graphInfo.marginBottom, graphInfo.marginTop]);
+            if (xExtent == null || yExtent == null ||
+                currXExtent[0] != xExtent[0] || currXExtent[1] != xExtent[1] ||
+                currYExtent[0] != yExtent[0] || currYExtent[1] != yExtent[1]) {
+                xExtent = currXExtent;
+                yExtent = currYExtent;
 
-            UpdateAxisScale(xScale, yScale);
+                // Define the scale for the x-axis
+                xScale = d3.scaleLinear()
+                    .domain(xExtent).nice()
+                    .range([graphInfo.marginLeft, graphInfo.width - graphInfo.marginRight]);
+
+                // Define the scale for the y-axis
+                yScale = d3.scaleLinear()
+                    .domain(yExtent).nice()
+                    .range([graphInfo.height - graphInfo.marginBottom, graphInfo.marginTop]);
+
+                UpdateAxisScale(xScale, yScale);
+
+                // If we adjusted the scale of the graph, we have to update the location of the points that were added prior to the scale change
+                d3.selectAll("path")
+                    .attr("d", line);
+                d3.selectAll(".dataCircle")
+                    .attr("cx", d => xScale(d.x))
+                    .attr("cy", d => yScale(d.y));
+                d3.selectAll(".dataCircleLabel")
+                    .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`);
+            }
 
             const l = Length(line(data));
 
@@ -104,7 +136,7 @@ function CreateNewSimulation() {
                 .attr("stroke", color)
                 .attr("stroke-width", 2)
                 .selectAll("circle")
-                .data(data)
+                .data(data.slice(1))
                 .join("circle")
                 .attr("class", "dataCircle")
                 .attr("cx", d => xScale(d.x))
@@ -116,7 +148,7 @@ function CreateNewSimulation() {
                 .attr("font-family", "sans-serif")
                 .attr("font-size", 10)
                 .selectAll("g")
-                .data(data)
+                .data(data.slice(1))
                 .join("g")
                 .attr("class", "dataCircleLabel")
                 .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`)
@@ -135,18 +167,16 @@ function CreateNewSimulation() {
                     }
                 });
 
-            d3.selectAll("path")
-                .attr("d", line);
-            d3.selectAll(".dataCircle")
-                .attr("cx", d => xScale(d.x))
-                .attr("cy", d => yScale(d.y));
-            d3.selectAll(".dataCircleLabel")
-                .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`);
-
             // Display the label once the line reaches it
             label.transition()
-                .delay((d, i) => Length(line(data.slice(0, i + 1))) / l * (graphInfo.animationDuration - 125))
+                .delay((d, i) => Length(line(data.slice(0, i+1))) / l * (graphInfo.animationDuration - 125))
                 .attr("opacity", 1);
+        }
+
+        // Calculate and return option prices
+        return {
+            callPrice: pricesAtExpiry.reduce((a, b) => a + Math.max(b - strikePrice, 0), 0) / pricesAtExpiry.length * Math.exp(-rfr * term),
+            putPrice: pricesAtExpiry.reduce((a, b) => a + Math.max(strikePrice - b, 0), 0) / pricesAtExpiry.length * Math.exp(-rfr * term)
         }
     }
 
@@ -155,11 +185,13 @@ function CreateNewSimulation() {
         xScale = d3.scaleLinear()
             .domain([0, term])
             .range([graphInfo.marginLeft, graphInfo.width - graphInfo.marginRight]);
+        xExtent = null;
 
         // Define the domain & range for the y-axis
         yScale = d3.scaleLinear()
             .domain([spotPrice - 10, spotPrice + 10])
             .range([graphInfo.height - graphInfo.marginBottom, graphInfo.marginTop]);
+        yExtent = null;
     }
 
     function AddAxis(xScale, yScale) {
@@ -205,7 +237,6 @@ function CreateNewSimulation() {
 
     // Box-Muller algo for getting a normally distributed random variable
     function GetNormalRandomVariable(mean, stddev) {
-        // This returns [0,1) instead of [0,1], but should be fine for this application
         var u1 = Math.random();
         var u2 = Math.random();
 
@@ -218,6 +249,7 @@ function CreateNewSimulation() {
         ResetAxisScale(50, 5);
         AddAxis(xScale, yScale);
         allData = [];
+        pricesAtExpiry = []
     }
 
     // Determine the length of the given path
@@ -239,6 +271,6 @@ function RefreshUserInputs() {
     term = Number(d3.select("#termInput").node().value);
     vol = Number(d3.select("#volInput").node().value);
     rfr = Number(d3.select("#rfrInput").node().value);
-    numSims = Number(d3.select("#numSimsInput").node().value);
-    timeSteps = Number(d3.select("#timeStepInput").node().value);
+    numSims = Math.round(Number(d3.select("#numSimsInput").node().value));
+    timeSteps = Math.round(Number(d3.select("#timeStepInput").node().value));
 };

@@ -1,22 +1,80 @@
-body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
+
+#graphContainer {
+  min-width: 75%;
 }
 
-svg {
-    height: 35%;
-    width: 35%;
-    margin-top: 10px;
-    margin-bottom: 10px;
+#graph {
+  height: 100%;
+  width: 100%;
 }
 
-button {
-    width: 150px;
-    height: 40px;
+#inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+#contentSection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-left: 1rem;
+  padding-top: 1rem;
 }
 
 .inputSection {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 15px;
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+output {
+  margin-right: 0.5rem;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  color: #333332;
+  font-size: large;
+  margin: 0;
+  position: relative;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding-left: 1rem;
+}
+
+button {
+  min-width: 8rem;
+  min-height: 2rem;
+  border-color: black;
+  border-width: 0.05rem;
+  background-color: rgba(0, 123, 255, 1);
+  color: white;
+  margin: 0.1rem;
+}
+
+input {
+  min-height: 1rem;
+  width: 5rem;
+  position: relative;
+  border-color: black;
+  border-width: 0.05rem;
+  background-color: rgba(0, 123, 255, 1);
+  color: white;
+}
+
+label {
+  font-weight: 400;
+  margin-right: 0.1rem;
 }
