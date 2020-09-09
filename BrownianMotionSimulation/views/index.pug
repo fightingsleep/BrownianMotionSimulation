@@ -2,42 +2,64 @@ extends layout
 
 block content
 
-  header
-    h1 Stock Price Following a Geometric Brownian Motion
+    div.container-fluid
+        div.row
+            div.col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12.my-1
+                div.jumbotron.m-0.py-4
+                    h1.display-4 Stock Price Following a Geometric Brownian Motion
+        div.row
+            div.col-3.col-sm-3.col-md-3.col-lg-3.col-xl-3.m-1
+                div.btn-group(role='group' aria-label="buttons")
+                    button.btn.btn-outline-secondary.px-5(type='button' data-toggle="collapse" data-target="#collapseInputs" aria-expanded="false" aria-controls="collapse") Config
+                    button.btn.btn-outline-primary.px-5#runButton(type='button') Run
+                    button.btn.btn-outline-primary.px-5#clearButton(type='button') Clear
+        div.row
+            div.col-5.col-sm-5.col-md-5.col-lg-5.col-xl-5
+                div.collapse#collapseInputs
+                    div.input-group.my-1
+                        div.input-group-prepend
+                            span.input-group-text#spotPriceAddon Spot Price: $
+                        input.form-control#spotPriceInput(type='number' value=50 placeholder='Spot Price' aria-label='Spot Price' aria-describedby='spotPriceAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#strikePriceAddon Strike Price: $
+                        input.form-control#strikePriceInput(type='number' value=55 placeholder='Strike Price' aria-label='Strike Price' aria-describedby='strikePriceAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#termAddon Term (in years):
+                        input.form-control#termInput(type='number' value=5 step='0.5' placeholder='Term (in years)' aria-label='Term' aria-describedby='termAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#volatilityAddon Volatility:
+                        input.form-control#volInput(type='number' value=0.2 step='0.01' placeholder='Volatility' aria-label='Volatility' aria-describedby='volatilityAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#rfrAddon Risk Free Interest Rate:
+                        input.form-control#rfrInput(type='number' value=0.05 step='0.01' placeholder='Risk Free Interest Rate' aria-label='Risk Free Interest Rate' aria-describedby='rfrAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#timeStepAddon Time Steps:
+                        input.form-control#timeStepInput(type='number' value=20 placeholder='Time Steps' aria-label='Time Steps' aria-describedby='timeStepAddon')
+                    div.input-group.mb-1
+                        div.input-group-prepend
+                            span.input-group-text#numSimsAddon Number of Simulations:
+                        input.form-control#numSimsInput(type='number' value=10 placeholder='Number of Simulations' aria-label='Number of Simulations' aria-describedby='numSimsAddon')
+        div.row
+            div.col-3.col-sm-3.col-md-3.col-lg-3.col-xl-3
+                div.input-group.input-group-sm.my-1
+                    div.input-group-prepend
+                        span.input-group-text#callPriceAddon Call Price:
+                    output.form-control#callPriceOutput(type='number' value=10 placeholder='Call Price' aria-label='Call Price' aria-describedby='callPriceAddon')
+                div.input-group.input-group-sm.my-1
+                    div.input-group-prepend
+                        span.input-group-text#putPriceAddon Put Price:
+                    output.form-control#putPriceOutput(type='number' value=10 placeholder='Put Price' aria-label='Put Price' aria-describedby='putPriceAddon')
+        div.row
+            div#graphContainer.col-12.col-sm-12.col-md-12.col-lg-9.col-xl-9
 
-  div#contentSection
-    div#inputGroup
-      div.inputSection
-        label(for='spotPriceInput') Spot Price: $
-        input#spotPriceInput(type='number' value=50)
-      div.inputSection
-        label(for='strikePriceInput') Strike Price: $
-        input#strikePriceInput(type='number' value=55)
-      div.inputSection
-        label(for='termInput') Term (in years): 
-        input#termInput(type='number' value=5 step='0.5')
-      div.inputSection
-        label(for='volInput') Volatility: 
-        input#volInput(type='number' value=0.2 step='0.01')
-      div.inputSection
-        label(for='rfrInput') Risk Free Interest Rate: 
-        input#rfrInput(type='number' value=0.05 step='0.01')
-      div.inputSection
-        label(for='timeStepInput') Time Steps: 
-        input#timeStepInput(type='number' value = 20)
-      div.inputSection
-        label(for='numSimsInput') Number of Simulations: 
-        input#numSimsInput(type='number' value=10)
-      div.inputSection
-        button#runButton Run
-        button#clearButton Clear
-      div.inputSection
-        label(for='callPriceOutput') Call Price:
-        output#callPriceOutput(name='callPriceOutput') 0
-        label(for='putPriceOutput') Put Price:
-        output#putPriceOutput(name='putPriceOutput') 0
-    div(id='graphContainer')
-
-  script(src='https://d3js.org/d3.v5.min.js')
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js" integrity="sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw==" crossorigin="anonymous")
-  script(src='/javascripts/graph.js')
+    script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js' integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN' crossorigin='anonymous')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV' crossorigin='anonymous')
+    script(src='https://d3js.org/d3.v5.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js' integrity='sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw==' crossorigin='anonymous')
+    script(src='/javascripts/graph.js')

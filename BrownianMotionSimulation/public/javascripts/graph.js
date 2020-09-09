@@ -8,6 +8,7 @@ BrownianMotionSimulation.Initialize(svg);
 var spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps;
 
 d3.select("#runButton").on("click", function () {
+    $('.collapse').collapse('hide')
     RefreshUserInputs();
     var optionPrices = BrownianMotionSimulation.RunSimulation(spotPrice, strikePrice, term, vol, rfr, numSims, timeSteps);
     document.getElementById("callPriceOutput").value = optionPrices.callPrice.toFixed(2);
