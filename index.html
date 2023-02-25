@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Brownian Motion</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 my-1">
+          <div class="jumbotron m-0 py-4">
+            <h1 class="display-4">Stock Price Following a Geometric Brownian Motion</h1>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="btn-group col-12 col-sm-12 col-md-8 col-lg-4 col-xl-3 my-1" role="group" aria-label="buttons">
+          <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseInputs" aria-expanded="false" aria-controls="collapse">Config</button>
+          <button class="btn btn-outline-primary" id="runButton" type="button">Run</button>
+          <button class="btn btn-outline-primary" id="clearButton" type="button">Clear</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-5">
+          <div class="collapse" id="collapseInputs">
+            <div class="input-group my-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="spotPriceAddon">Spot Price: $</span></div>
+              <input class="form-control" id="spotPriceInput" type="number" value="50" placeholder="Spot Price" aria-label="Spot Price" aria-describedby="spotPriceAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="strikePriceAddon">Strike Price: $</span></div>
+              <input class="form-control" id="strikePriceInput" type="number" value="55" placeholder="Strike Price" aria-label="Strike Price" aria-describedby="strikePriceAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="termAddon">Term (in years):</span></div>
+              <input class="form-control" id="termInput" type="number" value="5" step="0.5" placeholder="Term (in years)" aria-label="Term" aria-describedby="termAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="volatilityAddon">Volatility:</span></div>
+              <input class="form-control" id="volInput" type="number" value="0.2" step="0.01" placeholder="Volatility" aria-label="Volatility" aria-describedby="volatilityAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="rfrAddon">Risk Free Interest Rate:</span></div>
+              <input class="form-control" id="rfrInput" type="number" value="0.05" step="0.01" placeholder="Risk Free Interest Rate" aria-label="Risk Free Interest Rate" aria-describedby="rfrAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="timeStepAddon">Time Steps:</span></div>
+              <input class="form-control" id="timeStepInput" type="number" value="20" placeholder="Time Steps" aria-label="Time Steps" aria-describedby="timeStepAddon">
+            </div>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend"><span class="input-group-text" id="numSimsAddon">Number of Simulations:</span></div>
+              <input class="form-control" id="numSimsInput" type="number" value="10" placeholder="Number of Simulations" aria-label="Number of Simulations" aria-describedby="numSimsAddon">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-5 col-lg-3 col-xl-3">
+          <div class="input-group input-group-sm my-1">
+            <div class="input-group-prepend"><span class="input-group-text" id="callPriceAddon">Call Price:</span></div>
+            <output class="form-control" id="callPriceOutput" type="number" value="10" placeholder="Call Price" aria-label="Call Price" aria-describedby="callPriceAddon"></output>
+          </div>
+          <div class="input-group input-group-sm my-1">
+            <div class="input-group-prepend"><span class="input-group-text" id="putPriceAddon">Put Price:</span></div>
+            <output class="form-control" id="putPriceOutput" type="number" value="10" placeholder="Put Price" aria-label="Put Price" aria-describedby="putPriceAddon"></output>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9" id="graphContainer"></div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js" integrity="sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw==" crossorigin="anonymous"></script>
+    <script src="/scripts/graph.js"></script>
+  </body>
+</html>
