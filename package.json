@@ -1,0 +1,16 @@
+{
+  "name": "BrownianMotionApp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "description": "BrownianMotionApp",
+  "author": {
+    "name": "https://github.com/fightingsleep"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pug": "^3.0.2"
+  }
+}

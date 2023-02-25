@@ -11,7 +11,7 @@ An interactive visualization of the stock price paths generated during a Monte C
 ## Examples
 
 #### Running a small number of paths with high volatility
-<img src="BrownianMotion.gif" alt="drawing" width="600"/>
+<img src="./docs/BrownianMotion.gif" alt="drawing" width="600"/>
 
 #### Running a large number of paths
-<img src="BrownianMotion.png" alt="drawing" width="600"/>
+<img src="./docs/BrownianMotion.png" alt="drawing" width="600"/>
