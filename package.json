@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "build": "pug --out dist --pretty views/index.pug && copyfiles -f ./public/scripts/* ./dist/scripts/ && copyfiles -f ./public/styles/* ./dist/styles/"
+    "build": "pug --out dist --pretty views/index.pug && copyfiles -f ./public/scripts/* ./dist/scripts/ && copyfiles -f ./public/styles/* ./dist/styles/ && copyfiles -f ./public/favicon.ico ./dist/"
   },
   "description": "BrownianMotionApp",
   "author": {
