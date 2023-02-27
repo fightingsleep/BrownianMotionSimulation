@@ -4,7 +4,7 @@ An interactive visualization of the stock price paths generated during a Monte C
 
 ---
 
-### [Try it out](https://www.chrislross.com/BrownianMotionSimulation/BrownianMotionSimulation.html)
+### [Try it out](https://www.chrislross.com/BrownianMotionSimulation/)
 
 ---
 
